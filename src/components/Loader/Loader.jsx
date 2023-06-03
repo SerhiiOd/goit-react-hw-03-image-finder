@@ -9,7 +9,7 @@ export const Loader = () => {
   return (
     <>
       <RingLoader
-        color="#36d7b7"
+        color="#d8d00e"
         size={150}
         loading={true}
         cssOverride={ring}

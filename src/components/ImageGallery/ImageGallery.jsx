@@ -108,13 +108,13 @@ export class ImageGallery extends Component {
 
     return (
       <>
-        <Gallery>
+        <Gallery className="gallery">
           {images &&
             images.map(image => {
               return (
                 <ImageGalleryItem
                   key={image.id}
-                  tag={image.tag}
+                  tag={image.tags}
                   url={image.webformatURL}
                   largeImageUrl={image.largeImageURL}
                 />

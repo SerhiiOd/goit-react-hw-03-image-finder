@@ -17,14 +17,14 @@ export class Modal extends Component {
     window.removeEventListener('keydown', this.onKeyClose);
   }
 
-  onKeyClose = event => {
-    if (event.code === 'Escape') {
+  onKeyClose = e => {
+    if (e.code === 'Escape') {
       this.props.toggleModal();
     }
   };
 
-  onOverlayClick = event => {
-    if (event.target === event.currentTarget) {
+  onOverlayClick = e => {
+    if (e.target === e.currentTarget) {
       return this.props.toggleModal();
     }
   };
@@ -33,7 +33,7 @@ export class Modal extends Component {
     const { tag, largeImageUrl } = this.props;
 
     return (
-      <Overlay>
+      <Overlay onClick={this.onOverlayClick} id="overlay">
         <ModalBox>
           <img src={largeImageUrl} alt={tag} />
         </ModalBox>
