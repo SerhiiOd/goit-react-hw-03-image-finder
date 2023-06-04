@@ -48,7 +48,7 @@ export class App extends Component {
       this.setState(prevState => ({
         images: images.hits,
         loadMore: images.hits.length < totalHits,
-        pageNumber: prevState.pageNumber + 1,
+        // pageNumber: prevState.pageNumber + 1,
         isLoading: false,
       }));
 
@@ -63,14 +63,14 @@ export class App extends Component {
 
   onLoadMore = async () => {
     try {
-      const searchValue = this.state.searchValue;
-      const page = this.state.pageNumber;
+      const { searchValue, pageNumber } = this.state;
       this.setState({ isLoading: true });
 
-      const images = await fetchImages(page, searchValue);
+      const images = await fetchImages(pageNumber, searchValue);
 
       if (images.hits.length === 0) {
-        return toast.error('Please try something else');
+        toast.error('Please try something else');
+        return;
       }
 
       if (images.hits.length < 12) {
@@ -80,18 +80,47 @@ export class App extends Component {
           pageNumber: 1,
         }));
         toast("Oh, but that's all?! But you can try: 'Car'");
-        return;
+      } else {
+        this.setState(prevState => ({
+          images: [...prevState.images, ...images.hits],
+          pageNumber: prevState.pageNumber + 1,
+        }));
       }
-
-      this.setState(prevState => ({
-        images: [...prevState.images, ...images.hits],
-        pageNumber: prevState.pageNumber + 1,
-      }));
     } catch (error) {
       console.log(error);
     } finally {
       this.setState({ isLoading: false });
     }
+    // try {
+    //   const searchValue = this.state.searchValue;
+    //   const page = this.state.pageNumber;
+    //   this.setState({ isLoading: true });
+
+    //   const images = await fetchImages(page, searchValue);
+
+    //   if (images.hits.length === 0) {
+    //     return toast.error('Please try something else');
+    //   }
+
+    //   if (images.hits.length < 12) {
+    //     this.setState(prevState => ({
+    //       images: [...prevState.images, ...images.hits],
+    //       loadMore: false,
+    //       pageNumber: 1,
+    //     }));
+    //     toast("Oh, but that's all?! But you can try: 'Car'");
+    //     return;
+    //   }
+
+    //   this.setState(prevState => ({
+    //     images: [...prevState.images, ...images.hits],
+    //     pageNumber: prevState.pageNumber + 1,
+    //   }));
+    // } catch (error) {
+    //   console.log(error);
+    // } finally {
+    //   this.setState({ isLoading: false });
+    // }
   };
 
   onSearchSubmit = searchValue => {
