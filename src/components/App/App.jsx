@@ -20,12 +20,12 @@ export class App extends Component {
   async componentDidUpdate(prevProps, prevState) {
     if (prevState.searchValue !== this.state.searchValue) {
       try {
-        this.setState({
-          images: null,
-          pageNumber: 1,
-          loadMore: false,
-          isLoading: true,
-        });
+        // this.setState({
+        //   images: null,
+        //   pageNumber: 1,
+        //   loadMore: false,
+        //   isLoading: true,
+        // });
         await this.fetchGallery();
       } catch (error) {
         console.log(error);
@@ -35,10 +35,7 @@ export class App extends Component {
 
   fetchGallery = async () => {
     try {
-      const searchValue = this.state.searchValue;
-      const page = 1;
-
-      const images = await fetchImages(page, searchValue);
+      const images = await fetchImages(this.state.page, this.state.searchValue);
 
       if (images.hits.length === 0) {
         return toast.error(
@@ -46,24 +43,20 @@ export class App extends Component {
         );
       }
 
-      if (images.hits.length > 0 && images.totalHits <= 12) {
-        this.setState({
-          images: images.hits,
-        });
-        return toast("Oh, but thats's all?! But you can try: 'Car'");
-      }
+      const totalHits = images.totalHits;
 
-      if (images.hits.length > 0 && images.totalHits > 12) {
-        this.setState(prevState => ({
-          images: images.hits,
-          loadMore: true,
-          pageNumber: prevState.pageNumber + 1,
-        }));
-        return;
+      this.setState(prevState => ({
+        images: images.hits,
+        loadMore: images.hits.length < totalHits,
+        pageNumber: prevState.pageNumber + 1,
+        isLoading: false,
+      }));
+
+      if (totalHits <= 12) {
+        toast("Oh, but that's all?! But you can try: 'Car'");
       }
     } catch (error) {
       console.log(error);
-    } finally {
       this.setState({ isLoading: false });
     }
   };
@@ -104,6 +97,10 @@ export class App extends Component {
   onSearchSubmit = searchValue => {
     this.setState({
       searchValue,
+      images: null,
+      pageNumber: 1,
+      loadMore: false,
+      isLoading: true,
     });
   };
 
