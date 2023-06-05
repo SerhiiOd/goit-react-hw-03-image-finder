@@ -34,15 +34,13 @@ export class App extends Component {
       );
 
       if (hits.length === 0) {
-        return toast.error(
-          "Sorry, images not found... But you can try: 'Apple'"
-        );
+        toast.error("Sorry, images not found... But you can try: 'Apple'");
+        return;
       }
 
       this.setState(prevState => ({
-        ...prevState,
-        images: hits,
-        loadMore: hits.length < totalHits,
+        images: [...prevState.images, ...hits], // Append new images to the existing ones
+        loadMore: this.state.pageNumber < Math.ceil(totalHits / 12),
         isLoading: false,
       }));
 
@@ -56,36 +54,17 @@ export class App extends Component {
     }
   };
 
-  onLoadMore = async () => {
-    try {
-      const { searchValue, pageNumber } = this.state;
-      this.setState({ isLoading: true });
-
-      const images = await fetchImages(pageNumber, searchValue);
-
-      if (images.hits.length === 0) {
-        toast.error('Please try something else');
-      } else {
-        this.setState(prevState => ({
-          images: [...prevState.images, ...images.hits],
-          pageNumber: prevState.pageNumber + 1,
-          loadMore: images.hits.length < 12 ? false : prevState.loadMore,
-        }));
-        if (images.hits.length < 12) {
-          toast("Oh, but that's all?! But you can try: 'Car'");
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      this.setState({ isLoading: false });
-    }
+  onLoadMore = () => {
+    this.setState(prevState => ({
+      pageNumber: prevState.pageNumber + 1,
+      isLoading: true, // Добавляем isLoading: true
+    }));
   };
 
   onSearchSubmit = searchValue => {
     this.setState({
       searchValue,
-      images: null,
+      images: [],
       pageNumber: 1,
       loadMore: false,
       isLoading: true,
