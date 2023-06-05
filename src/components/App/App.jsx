@@ -57,7 +57,6 @@ export class App extends Component {
   onLoadMore = () => {
     this.setState(prevState => ({
       pageNumber: prevState.pageNumber + 1,
-      isLoading: true, // Добавляем isLoading: true
     }));
   };
 
