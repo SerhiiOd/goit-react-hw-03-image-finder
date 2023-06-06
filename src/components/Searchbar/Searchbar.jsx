@@ -59,4 +59,3 @@ export class Searchbar extends Component {
     );
   }
 }
-.
