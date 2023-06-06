@@ -39,7 +39,7 @@ export class App extends Component {
       }
 
       this.setState(prevState => ({
-        images: [...prevState.images, ...hits], // Append new images to the existing ones
+        images: [...prevState.images, ...hits],
         loadMore: this.state.pageNumber < Math.ceil(totalHits / 12),
         isLoading: false,
       }));
